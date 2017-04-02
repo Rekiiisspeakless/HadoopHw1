@@ -58,14 +58,14 @@ public static class IntSumReducer
         int sum = 0;
         for (MyValuePair val1 : values) {
 			for(MyValuePair val2 : values){
-				if(val1.getName().get() != val2.getName().get() && val1.getIndex().get() == val2.getIndex().get()){
-					sum += val1.getValue().get() * val2.getValue().get();
+				if(val1.getName() != val2.getName() && val1.getIndex() == val2.getIndex()){
+					sum += val1.getValue() * val2.getValue();
 				}
 			}
         }
        result.set(sum);
         Text t = new Text();
-        t.set(key.getI().toString() + "," + key.getK().toString() + "," + Integer.toString(sum));
+        t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum));
        context.write(null, t);
     }
 }

@@ -10,36 +10,49 @@ import java.io.IOException;
 
 
 public class MyKeyPair implements WritableComparable<MyKeyPair> {
-	private IntWritable i;
-	private IntWritable k;
+	private int i;
+	private int k;
 	public MyKeyPair(){
-		this.i = new IntWritable(0);
-		this.k = new IntWritable(0);
+		this.i = 0;
+		this.k = 0;
 	}
 	public MyKeyPair(int i, int k){
-		this.i = new IntWritable(i);
-		this.k = new IntWritable(k);
+		this.i = i;
+		this.k = k;
 		//this.i.set(i);
 		//this.k.set(k);
 	}
-	public IntWritable getI(){
+	public int getI(){
 		return i;
 	}
-	public IntWritable getK(){
+	public int getK(){
 		return k;
 	}
 	public void write(DataOutput out) throws IOException {
-	 i.write(out);
-	 k.write(out);
+	 out.writeInt(i);
+	 out.writeInt(k);
    }
    
    public void readFields(DataInput in) throws IOException {
-	 i.readFields(in);
-	 k.readFields(in);
+	 i = in.readInt();
+	 k = in.readInt();
+   }
+
+
+   public static  MyKeyPair read(DataInput in) throws IOException{
+		MyKeyPair  myKeyPair = new MyKeyPair();
+		myKeyPair.readFields(in);
+		return  myKeyPair;
    }
 
     @Override
     public int compareTo(MyKeyPair o) {
-	    return (o.i.get() > this.i.get() ? 0 : (o.i.get() == this.i.get() ? (o.k.get() > this.k.get() ? 0 : 1 ): 1));
+	    int value1 = this.i - o.getI();
+	    int value2 = this.k - o.getK();
+	    if(value1 != 0){
+	    	return  value1;
+		}else{
+	    	return value2;
+		}
     }
 }

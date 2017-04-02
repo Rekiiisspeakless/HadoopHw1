@@ -8,43 +8,43 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Writable;
 
 public  class MyValuePair implements Writable{
-	private IntWritable name;
-	private IntWritable index;
-	private IntWritable value;
+	private int name;
+	private int index;
+	private int value;
 	public MyValuePair(int name, int index, int value){
-		this.name = new IntWritable(name);
-		this.index = new IntWritable(index);
-		this.value = new IntWritable(value);
+		this.name = name;
+		this.index = index;
+		this.value = value;
 	}
 	public  MyValuePair(){
-		this.name = new IntWritable(0);
-		this.index = new IntWritable(0);
-		this.value = new IntWritable(0);
+		this.name = 0;
+		this.index = 0;
+		this.value = 0;
 	}
-	public IntWritable getName(){
+	public int getName(){
 		return name;
 	}
-	public IntWritable getIndex(){
+	public int getIndex(){
 		return index;
 	}
-	public IntWritable getValue(){
+	public int getValue(){
 		return value;
 	}
 	public void write(DataOutput out) throws IOException {
-	 name.write(out);
-	 index.write(out);
-	 value.write(out);
+		out.writeInt(name);
+		out.writeInt(index);
+		out.writeInt(value);
    }
    
    public void readFields(DataInput in) throws IOException {
-	 name.readFields(in);
-	 index.readFields(in);
-	 value.readFields(in);
+	 this.name = in.readInt();
+	 this.index = in.readInt();
+	 this.value = in.readInt();
    }
    
    public static MyValuePair read(DataInput in) throws IOException {
-	   MyValuePair w = new MyValuePair(in.readInt(), in.readInt(), in.readInt());
+	   MyValuePair w = new MyValuePair();
 	 	w.readFields(in);
-	 return w;
+	 	return w;
    }
 }
