@@ -50,6 +50,9 @@ public class MapReduce {
                 MyKeyPair keyPair = new MyKeyPair(k, index2);
                 MyValuePair valuePair = new MyValuePair(nameValue, index1, val);
                 context.write(keyPair, valuePair);
+                message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
+                message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
+                        + "," +  String.valueOf(valuePair.getValue()) + " )\n";
             }
 
 		}
