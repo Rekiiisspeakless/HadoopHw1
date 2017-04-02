@@ -36,9 +36,16 @@ public class MapReduce {
 		index2 = Integer.valueOf(itr.nextToken()).intValue();
 		val = Integer.valueOf(itr.nextToken()).intValue();
 		for(int k = 0; k < 3; k++){
-			MyKeyPair keyPair = new MyKeyPair(index1, k);
-			MyValuePair valuePair = new MyValuePair(nameValue, index2, val);
-			context.write(keyPair, valuePair);
+		    if(nameValue == 1){
+                MyKeyPair keyPair = new MyKeyPair(index1, k);
+                MyValuePair valuePair = new MyValuePair(nameValue, index2, val);
+                context.write(keyPair, valuePair);
+            }else{
+                MyKeyPair keyPair = new MyKeyPair(k, index2);
+                MyValuePair valuePair = new MyValuePair(nameValue, index1, val);
+                context.write(keyPair, valuePair);
+            }
+
 		}
         
         }
@@ -56,16 +63,19 @@ public static class IntSumReducer
                         Context context
                         ) throws IOException, InterruptedException {
         int sum = 0;
+        int flag = 1;
         for (MyValuePair val1 : values) {
 			for(MyValuePair val2 : values){
 				if(val1.getName() != val2.getName() && val1.getIndex() == val2.getIndex()){
+				    flag = -1;
 					sum += val1.getValue() * val2.getValue();
 				}
 			}
         }
        result.set(sum);
         Text t = new Text();
-        t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum));
+        t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum) + ", flag = "  +  String.valueOf(flag));
+        //t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum));
        context.write(null, t);
     }
 }
