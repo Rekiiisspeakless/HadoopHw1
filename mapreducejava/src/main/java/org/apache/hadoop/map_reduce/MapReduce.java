@@ -64,6 +64,8 @@ public static class IntSumReducer
                         ) throws IOException, InterruptedException {
         int sum = 0;
         int flag = 1;
+        String message = new String();
+        message += ("key: " + String.valueOf(key.getI()) + ", " + String.valueOf(key.getK()) + "\n" );
         for (MyValuePair val1 : values) {
 			for(MyValuePair val2 : values){
 				if(val1.getName() != val2.getName() && val1.getIndex() == val2.getIndex()){
@@ -71,8 +73,14 @@ public static class IntSumReducer
 					sum += val1.getValue() * val2.getValue();
 				}
 			}
+			message += (String.valueOf(val1.getName()) + "," + String.valueOf(val1.getIndex()) + "," +  String.valueOf(val1.getValue()) + "\n");
         }
-       result.set(sum);
+        try {
+            throw  new Exception(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        result.set(sum);
         Text t = new Text();
         t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum) + ", flag = "  +  String.valueOf(flag));
         //t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum));
