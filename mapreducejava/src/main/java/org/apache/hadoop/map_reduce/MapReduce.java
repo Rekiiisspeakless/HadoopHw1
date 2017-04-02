@@ -61,7 +61,7 @@ public static class IntSumReducer
 
     public void reduce(MyKeyPair key, Iterable<MyValuePair> values,
                         Context context
-                        ) throws IOException, InterruptedException {
+                        ) throws IOException, InterruptedException{
         int sum = 0;
         int flag = 1;
         String message = new String();
@@ -75,10 +75,8 @@ public static class IntSumReducer
 			}
 			message += (String.valueOf(val1.getName()) + "," + String.valueOf(val1.getIndex()) + "," +  String.valueOf(val1.getValue()) + "\n");
         }
-        try {
-            throw  new Exception(message);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(sum == 0) {
+            throw  new IOException(message);
         }
         result.set(sum);
         Text t = new Text();
