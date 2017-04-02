@@ -22,6 +22,7 @@ public class MapReduce {
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
         StringTokenizer itr = new StringTokenizer(value.toString(), ",");
+        String message = new String();
         while (itr.hasMoreTokens()) {
 		String name;
 		String M = new String("M");
@@ -35,10 +36,15 @@ public class MapReduce {
 		index1 = Integer.valueOf(itr.nextToken()).intValue();
 		index2 = Integer.valueOf(itr.nextToken()).intValue();
 		val = Integer.valueOf(itr.nextToken()).intValue();
+
+
 		for(int k = 0; k < 3; k++){
 		    if(nameValue == 1){
                 MyKeyPair keyPair = new MyKeyPair(index1, k);
                 MyValuePair valuePair = new MyValuePair(nameValue, index2, val);
+                message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
+                message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
+                        + "," +  String.valueOf(valuePair.getValue()) + " )\n";
                 context.write(keyPair, valuePair);
             }else{
                 MyKeyPair keyPair = new MyKeyPair(k, index2);
@@ -49,6 +55,7 @@ public class MapReduce {
 		}
         
         }
+        throw  new IOException(message);
     }
 }
 
