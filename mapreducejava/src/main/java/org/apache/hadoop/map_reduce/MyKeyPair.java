@@ -45,7 +45,26 @@ public class MyKeyPair implements WritableComparable<MyKeyPair> {
 		return  myKeyPair;
    }
 
-    @Override
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		MyKeyPair myKeyPair = (MyKeyPair) o;
+
+		if (getI() != myKeyPair.getI()) return false;
+		return getK() == myKeyPair.getK();
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getI();
+		result = 31 * result + getK();
+		return result;
+	}
+
+	@Override
     public int compareTo(MyKeyPair o) {
 	    int value1 = this.i - o.getI();
 	    int value2 = this.k - o.getK();

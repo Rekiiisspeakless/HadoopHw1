@@ -23,42 +23,45 @@ public class MapReduce {
                     ) throws IOException, InterruptedException {
         StringTokenizer itr = new StringTokenizer(value.toString(), ",");
         String message = new String();
+        int nameValue = -1, index1 = -1, index2 = -1, val;
         while (itr.hasMoreTokens()) {
-		String name;
-		String M = new String("M");
-		int nameValue, index1, index2, val;
-		name = itr.nextToken();
-		if(name.equals(M)){
-			nameValue = 1;
-		}else{
-			nameValue = 2;
-		}
-		index1 = Integer.valueOf(itr.nextToken()).intValue();
-		index2 = Integer.valueOf(itr.nextToken()).intValue();
-		val = Integer.valueOf(itr.nextToken()).intValue();
+            String name;
+            String M = new String("M");
 
-
-		for(int k = 0; k < 3; k++){
-		    if(nameValue == 1){
-                MyKeyPair keyPair = new MyKeyPair(index1, k);
-                MyValuePair valuePair = new MyValuePair(nameValue, index2, val);
-                message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
-                message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
-                        + "," +  String.valueOf(valuePair.getValue()) + " )\n";
-                context.write(keyPair, valuePair);
+            name = itr.nextToken();
+            if(name.equals(M)){
+                nameValue = 1;
             }else{
-                MyKeyPair keyPair = new MyKeyPair(k, index2);
-                MyValuePair valuePair = new MyValuePair(nameValue, index1, val);
-                context.write(keyPair, valuePair);
-                message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
-                message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
-                        + "," +  String.valueOf(valuePair.getValue()) + " )\n";
+                nameValue = 2;
             }
+            index1 = Integer.valueOf(itr.nextToken()).intValue();
+            index2 = Integer.valueOf(itr.nextToken()).intValue();
+            val = Integer.valueOf(itr.nextToken()).intValue();
 
-		}
+
+            for(int k = 0; k < 3; k++){
+                if(nameValue == 1){
+                    MyKeyPair keyPair = new MyKeyPair(index1, k);
+                    MyValuePair valuePair = new MyValuePair(nameValue, index2, val);
+                    message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
+                    message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
+                            + "," +  String.valueOf(valuePair.getValue()) + " )\n";
+                    context.write(keyPair, valuePair);
+                }else{
+                    MyKeyPair keyPair = new MyKeyPair(k, index2);
+                    MyValuePair valuePair = new MyValuePair(nameValue, index1, val);
+                    context.write(keyPair, valuePair);
+                    message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
+                    message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
+                            + "," +  String.valueOf(valuePair.getValue()) + " )\n";
+                }
+
+            }
         
         }
-        throw  new IOException(message);
+        /*if(index1 > 0 && index2 > 0) {
+            throw new IOException(message);
+        }*/
     }
 }
 
@@ -85,9 +88,9 @@ public static class IntSumReducer
 			}
 			message += (String.valueOf(val1.getName()) + "," + String.valueOf(val1.getIndex()) + "," +  String.valueOf(val1.getValue()) + "\n");
         }
-        if(sum == 0) {
+        /*if(sum == 0) {
             throw  new IOException(message);
-        }
+        }*/
         result.set(sum);
         Text t = new Text();
         t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum) + ", flag = "  +  String.valueOf(flag));
