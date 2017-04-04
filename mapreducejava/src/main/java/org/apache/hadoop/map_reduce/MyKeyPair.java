@@ -22,6 +22,10 @@ public class MyKeyPair implements WritableComparable<MyKeyPair> {
 		//this.i.set(i);
 		//this.k.set(k);
 	}
+	public  void set(int i, int k){
+		this.i = i;
+		this.k = k;
+	}
 	public int getI(){
 		return i;
 	}
@@ -66,12 +70,25 @@ public class MyKeyPair implements WritableComparable<MyKeyPair> {
 
 	@Override
     public int compareTo(MyKeyPair o) {
-	    int value1 = this.i - o.getI();
+	    /*int value1 = this.i - o.getI();
 	    int value2 = this.k - o.getK();
 	    if(value1 != 0){
 	    	return  value1;
 		}else{
 	    	return value2;
+		}*/
+		if (Integer.compare(this.getI(), o.getI()) != 0) {
+			return Integer.compare(this.getI(), o.getI());
+		} else {
+			return Integer.compare(this.getK(), o.getK());
 		}
     }
+
+	@Override
+	public String toString() {
+		return "MyKeyPair{" +
+				"i=" + i +
+				", k=" + k +
+				'}';
+	}
 }

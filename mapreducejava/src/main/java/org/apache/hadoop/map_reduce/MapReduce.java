@@ -17,7 +17,8 @@ public class MapReduce {
 
     public static class TokenizerMapper
         extends Mapper<Object, Text, MyKeyPair, MyValuePair>{
-    private final static IntWritable one = new IntWritable(1);
+    private MyKeyPair keyPair = new MyKeyPair();
+    private MyValuePair valuePair = new MyValuePair();
 
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
@@ -41,15 +42,15 @@ public class MapReduce {
 
             for(int k = 0; k < 3; k++){
                 if(nameValue == 1){
-                    MyKeyPair keyPair = new MyKeyPair(index1, k);
-                    MyValuePair valuePair = new MyValuePair(nameValue, index2, val);
+                    keyPair.set(index1, k);
+                    valuePair.set(nameValue, index2, val);
                     message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
                     message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
                             + "," +  String.valueOf(valuePair.getValue()) + " )\n";
                     context.write(keyPair, valuePair);
                 }else{
-                    MyKeyPair keyPair = new MyKeyPair(k, index2);
-                    MyValuePair valuePair = new MyValuePair(nameValue, index1, val);
+                    keyPair.set(k, index2);
+                    valuePair.set(nameValue, index1, val);
                     context.write(keyPair, valuePair);
                     message += "( " + String.valueOf(keyPair.getI()) + "," + String.valueOf(keyPair.getK()) + " ) ";
                     message += "( " + String.valueOf(valuePair.getName()) + "," + String.valueOf(valuePair.getIndex())
@@ -71,16 +72,20 @@ public class MapReduce {
 public static class IntSumReducer
         extends Reducer<MyKeyPair,MyValuePair,MyKeyPair,Text> {
     private IntWritable result = new IntWritable();
+    private  Text t = new Text();
 
     public void reduce(MyKeyPair key, Iterable<MyValuePair> values,
                         Context context
                         ) throws IOException, InterruptedException{
         int sum = 0;
+        int count = 0;
         int flag = 1;
         String message = new String();
         message += ("key: " + String.valueOf(key.getI()) + ", " + String.valueOf(key.getK()) + "\n" );
         for (MyValuePair val1 : values) {
+            count ++;
 			for(MyValuePair val2 : values){
+
 				if(val1.getName() != val2.getName() && val1.getIndex() == val2.getIndex()){
 				    flag = -1;
 					sum += val1.getValue() * val2.getValue();
@@ -92,8 +97,8 @@ public static class IntSumReducer
             throw  new IOException(message);
         }*/
         result.set(sum);
-        Text t = new Text();
-        t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum) + ", flag = "  +  String.valueOf(flag));
+        t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum) + ", flag = "  +  String.valueOf(flag)
+        +  ", count = " + String.valueOf(count) + ", message = " + message);
         //t.set(String.valueOf(key.getI()) + "," + String.valueOf(key.getK()) + "," + Integer.toString(sum));
        context.write(null, t);
     }
@@ -111,12 +116,19 @@ public static void main(String[] args) throws Exception {
     job.setMapperClass(TokenizerMapper.class);
     //job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
+
     job.setMapOutputKeyClass(MyKeyPair.class);
     job.setMapOutputValueClass(MyValuePair.class);
+
     job.setOutputKeyClass(MyKeyPair.class);
     job.setOutputValueClass(Text.class);
+
+    /*job.setOutputKeyClass(MyKeyPair.class);
+    job.setOutputValueClass(MyValuePair.class);*/
+
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
     FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+
     System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

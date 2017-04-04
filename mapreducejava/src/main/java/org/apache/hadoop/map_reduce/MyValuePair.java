@@ -21,6 +21,11 @@ public  class MyValuePair implements Writable{
 		this.index = 0;
 		this.value = 0;
 	}
+	public  void set(int name, int index, int value){
+		this.name = name;
+		this.index = index;
+		this.value = value;
+	}
 	public int getName(){
 		return name;
 	}
@@ -47,4 +52,13 @@ public  class MyValuePair implements Writable{
 	 	w.readFields(in);
 	 	return w;
    }
+
+	@Override
+	public String toString() {
+		return "MyValuePair{" +
+				"name=" + name +
+				", index=" + index +
+				", value=" + value +
+				'}';
+	}
 }
