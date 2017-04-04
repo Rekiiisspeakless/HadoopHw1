@@ -82,10 +82,11 @@ public static class IntSumReducer
         int flag = 1;
         String message = new String();
         message += ("key: " + String.valueOf(key.getI()) + ", " + String.valueOf(key.getK()) + "\n" );
-        for (MyValuePair val1 : values) {
+        for(MyValuePair val : values){
             count ++;
+        }
+        for (MyValuePair val1 : values) {
 			for(MyValuePair val2 : values){
-
 				if(val1.getName() != val2.getName() && val1.getIndex() == val2.getIndex()){
 				    flag = -1;
 					sum += val1.getValue() * val2.getValue();
